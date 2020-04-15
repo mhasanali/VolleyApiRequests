@@ -3,11 +3,14 @@ package com.example.volleyapi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,9 +24,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.spec.ECField;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    String url="https://stage-operations.dawaai.pk/picker/login";
+   // String url="https://stage-operations.dawaai.pk/picker/login";
+    String url="https://stage-operations.dawaai.pk/picker/order/assign";
     RequestQueue requestQueue;
     JsonObjectRequest jsonreq;
     JSONObject object;
@@ -47,8 +53,10 @@ public class MainActivity extends AppCompatActivity {
             try{
                 requestQueue = Volley.newRequestQueue(MainActivity.this);
                 object=new JSONObject();
-                object.put("username","picker1");
-                object.put("password","picker123");
+//                object.put("username","picker1");
+//                object.put("password","picker123");
+
+                //object.put("eyJ1c2VybmFtZSI6InBpY2tlcjEiLCJwYXNzd29yZCI6InBpY2tlcjEyMyJ9");
                 jsonreq=new JsonObjectRequest(Request.Method.POST, url, object, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -65,7 +73,15 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                });
+
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String,String> params=new HashMap<String,String>();
+                        params.put("Authorization","eyJ1c2VybmFtZSI6InBpY2tlcjEiLCJwYXNzd29yZCI6InBpY2tlcjEyMyJ9");
+                        return params;
+                    }
+                };
 
                 requestQueue.add(jsonreq);
             }
@@ -100,5 +116,10 @@ public class MainActivity extends AppCompatActivity {
      //   RequestQueue requestQueue= Volley.newRequestQueue(this);
         //        requestQueue.add(jsonReq);
        // requestQueue.start();
+    }
+    public void NewWindow(View view){
+        Intent intent=new Intent(this,UserData.class);
+        startActivity(intent);
+
     }
 }
